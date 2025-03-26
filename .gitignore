@@ -5,16 +5,11 @@
 *.iml
 .gradle
 /local.properties
-.DS_Store
 
 # IntelliJ project files
 .idea/*
 !.idea/gradle.xml
 !.idea/misc.xml
-
-# Optional: if you're using these configs across team, un-ignore them
-# !.idea/modules.xml
-# !.idea/workspace.xml
 
 # ===================================
 # Build & intermediate files
