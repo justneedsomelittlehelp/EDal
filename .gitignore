@@ -1,15 +1,36 @@
+# ===================================
+# Android Studio & IntelliJ
+# ===================================
+
 *.iml
 .gradle
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
 .DS_Store
+
+# IntelliJ project files
+.idea/*
+!.idea/gradle.xml
+!.idea/misc.xml
+
+# Optional: if you're using these configs across team, un-ignore them
+# !.idea/modules.xml
+# !.idea/workspace.xml
+
+# ===================================
+# Build & intermediate files
+# ===================================
+
 /build
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+
+# ===================================
+# Others
+# ===================================
+
+# Mac system file
+.DS_Store
+
+# Log files
+*.log
