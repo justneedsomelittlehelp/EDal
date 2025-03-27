@@ -29,3 +29,5 @@
 
 # Log files
 *.log
+
+/app/google-services.json
