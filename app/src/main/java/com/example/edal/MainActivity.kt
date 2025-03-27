@@ -3,27 +3,30 @@ package com.example.edal
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import com.example.edal.ui.screens.LoginScreen
 import com.example.edal.ui.theme.EDalTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             EDalTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val isUserLoggedIn = FirebaseAuth.getInstance().currentUser != null
+                var isLoggedIn by remember { mutableStateOf(isUserLoggedIn) }
+
+                if (isLoggedIn) {
+                    HomeScreen(onLogout = {
+                        FirebaseAuth.getInstance().signOut()
+                        isLoggedIn = false
+                    })
+                } else {
+                    LoginScreen(onLoginSuccess = { isLoggedIn = true })
                 }
             }
         }
@@ -31,17 +34,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EDalTheme {
-        Greeting("Android")
+fun HomeScreen(onLogout: () -> Unit) {
+    Surface {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Text(
+                text = "Welcome to EDal 🎉",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(onClick = onLogout) {
+                Text("Logout")
+            }
+        }
     }
 }
+

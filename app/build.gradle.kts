@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.firebase)
 }
 
+apply(plugin = "com.google.gms.google-services")
+
 android {
     namespace = "com.example.edal"
     compileSdk = 35
@@ -63,4 +65,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 }
