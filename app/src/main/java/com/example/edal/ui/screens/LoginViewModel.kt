@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -63,10 +64,25 @@ class LoginViewModel : ViewModel() {
             .addOnCompleteListener { task ->
                 _isLoading.value = false
                 if (task.isSuccessful) {
-                    onSuccess()
+                    val uid = auth.currentUser?.uid
+                    if (uid != null) {
+                        FirebaseFirestore.getInstance()
+                            .collection("users")
+                            .document(uid)
+                            .set(mapOf("role" to "", "profileCreated" to false))
+                            .addOnSuccessListener {
+                                onSuccess()
+                            }
+                            .addOnFailureListener { e ->
+                                _error.value = "Failed to initialize user: ${e.localizedMessage}"
+                            }
+                    } else {
+                        _error.value = "Could not retrieve user ID"
+                    }
                 } else {
                     _error.value = task.exception?.message ?: "Registration failed"
                 }
             }
     }
+
 }
