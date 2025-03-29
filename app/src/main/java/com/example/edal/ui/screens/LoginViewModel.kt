@@ -13,6 +13,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.AuthCredential
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+
 
 class LoginViewModel : ViewModel() {
 
@@ -85,7 +89,7 @@ class LoginViewModel : ViewModel() {
                         auth.signOut()
                     }
                 } else {
-                    _error.value = task.exception?.message ?: "Login failed"
+                    _error.value = "Invalid login credentials. Please check your email and password."
                 }
             }
     }
