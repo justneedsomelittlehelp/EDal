@@ -110,7 +110,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedButton(
-                onClick = { viewModel.register(onLoginSuccess) },
+                onClick = { viewModel.register() },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !isLoading && isInputValid
             ) {

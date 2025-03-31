@@ -16,8 +16,8 @@ import com.example.edal.ui.theme.EDalTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
-import com.example.edal.ui.screens.ProfileScreen
 import com.example.edal.ui.screens.HomeScreen
+import com.example.edal.ui.screens.RenteeProfileScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -42,12 +42,14 @@ class MainActivity : ComponentActivity() {
                         try {
                             val snapshot = firestore.collection("users").document(user.uid).get().await()
                             val role = snapshot.getString("role")
+                            val profileCreated = snapshot.getBoolean("profileCreated") ?: false
 
-                            screenState = if (role.isNullOrEmpty()) {
-                                "role"
-                            } else {
-                                "home"
+                            screenState = when {
+                                role.isNullOrEmpty() -> "role"
+                                !profileCreated -> "profile" // ✅ Send to profile screen
+                                else -> "home"
                             }
+
 
                         } catch (e: Exception) {
                             screenState = "login"
@@ -68,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             val uid = auth.currentUser!!.uid
                             firestore.collection("users").document(uid)
                                 .set(mapOf("role" to role))
-                                .addOnSuccessListener { screenState = "home" }
+                                .addOnSuccessListener { screenState = "loading" }
                         },
                         onLogout = {
                             FirebaseAuth.getInstance().signOut()
@@ -77,11 +79,14 @@ class MainActivity : ComponentActivity() {
                     )
 
 
-                    "profile" -> ProfileScreen(onLogout = {
-                        auth.signOut()
-                        currentUser = null
-                        screenState = "login"
-                    })
+                    "profile" -> RenteeProfileScreen(
+                        onProfileSaved = { screenState = "home" },
+                        onLogout = {
+                            FirebaseAuth.getInstance().signOut()
+                            screenState = "login"
+                        }
+                    )
+
 
                     "home" -> HomeScreen(onLogout = {
                         auth.signOut()

@@ -33,7 +33,7 @@ class LoginViewModel : ViewModel() {
         _password.value = newPassword
     }
 
-    fun register(onSuccess: () -> Unit) {
+    fun register() {
         _isLoading.value = true
         _error.value = null
 
@@ -46,7 +46,7 @@ class LoginViewModel : ViewModel() {
                         ?.addOnCompleteListener { verifyTask ->
                             if (verifyTask.isSuccessful) {
                                 _error.value = "Verification email sent. Please check your inbox."
-                                onSuccess()
+                                auth.signOut()
                             } else {
                                 _error.value = "Failed to send verification email."
                             }
