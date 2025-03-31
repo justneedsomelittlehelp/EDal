@@ -1,21 +1,12 @@
 package com.example.edal.ui.screens
 
-import android.app.Activity
-import android.content.Intent
+
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.AuthCredential
-import android.util.Log
-import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+
 
 
 class LoginViewModel : ViewModel() {
@@ -55,6 +46,7 @@ class LoginViewModel : ViewModel() {
                         ?.addOnCompleteListener { verifyTask ->
                             if (verifyTask.isSuccessful) {
                                 _error.value = "Verification email sent. Please check your inbox."
+                                onSuccess()
                             } else {
                                 _error.value = "Failed to send verification email."
                             }
@@ -109,5 +101,27 @@ class LoginViewModel : ViewModel() {
                 }
             }
     }
+
+    fun resendVerificationEmail(onSent: () -> Unit, onError: (String) -> Unit) {
+        val user = auth.currentUser
+        if (user != null && !user.isEmailVerified) {
+            user.sendEmailVerification()
+                .addOnSuccessListener { onSent() }
+                .addOnFailureListener { e ->
+                    onError("Failed to send verification email: ${e.localizedMessage}")
+                }
+        } else {
+            onError("You must be logged in to resend verification.")
+        }
+    }
+
+    fun sendPasswordResetEmail(email: String, onSent: () -> Unit, onError: (String) -> Unit) {
+        auth.sendPasswordResetEmail(email)
+            .addOnSuccessListener { onSent() }
+            .addOnFailureListener { e ->
+                onError("Failed to send reset email: ${e.localizedMessage}")
+            }
+    }
+
 }
 
