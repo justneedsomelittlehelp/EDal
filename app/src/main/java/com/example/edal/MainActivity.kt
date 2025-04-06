@@ -18,14 +18,21 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import com.example.edal.ui.screens.HomeScreen
 import com.example.edal.ui.screens.RenteeProfileScreen
+import com.example.edal.ui.screens.RenteeMoveInScreen
+import com.jakewharton.threetenabp.AndroidThreeTen
+
 
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidThreeTen.init(this)
         super.onCreate(savedInstanceState)
 
         val auth = FirebaseAuth.getInstance()
         val firestore = FirebaseFirestore.getInstance()
+
+        AndroidThreeTen.init(this)
 
         setContent {
             var currentUser by remember { mutableStateOf(auth.currentUser) }
@@ -80,12 +87,19 @@ class MainActivity : ComponentActivity() {
 
 
                     "profile" -> RenteeProfileScreen(
-                        onProfileSaved = { screenState = "home" },
+                        onProfileSaved = {
+                            screenState = "movein"
+                        },
                         onLogout = {
-                            FirebaseAuth.getInstance().signOut()
+                            auth.signOut()
+                            currentUser = null
                             screenState = "login"
                         }
                     )
+
+                    "movein" -> RenteeMoveInScreen(onNext = {
+                        screenState = "home"
+                    })
 
 
                     "home" -> HomeScreen(onLogout = {

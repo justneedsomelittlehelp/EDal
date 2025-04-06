@@ -107,11 +107,19 @@ fun RenteeProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val isFormValid = firstName.isNotBlank() &&
+                    lastName.isNotBlank() &&
+                    age.isNotBlank() &&
+                    gender.isNotBlank() &&
+                    selectedState.isNotBlank() &&
+                    selectedCity.isNotBlank()
+
             Button(
                 onClick = { viewModel.saveProfile(onProfileSaved) },
-                enabled = !isSaving,
+                enabled = isFormValid && !isSaving,
                 modifier = Modifier.fillMaxWidth()
-            ) {
+            )
+            {
                 Text("Save Profile")
             }
 
